@@ -1,3 +1,11 @@
+# Author: Massimo Menichinelli
+# Homepage: http://www.openp2pdesign.org
+# License: GPL v.3
+#
+# Instructions: install pyGithub with pip install PyGithub
+#
+
+
 from github import Github
 import networkx as nx
 
