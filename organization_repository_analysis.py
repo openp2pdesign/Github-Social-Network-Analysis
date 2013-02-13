@@ -18,27 +18,27 @@ import networkx as nx
 import getpass
 
 def analyse_repo(repository):
-    a = org.get_repo(repo_to_mine)
+    
     print "-----"
-    print "DESCRIPTION:",a.description
+    print "DESCRIPTION:",repository.description
     print "-----"
-    print "OWNER:",a.owner.login
+    print "OWNER:",repository.owner.login
     print "-----"
-    print "WATCHERS:",a.watchers
-    for i in a.get_stargazers():
+    print "WATCHERS:",repository.watchers
+    for i in repository.get_stargazers():
         if i != None:
             print "-",i.login
     print "-----"
     print "COLLABORATORS"
-    for i in a.get_collaborators():
+    for i in repository.get_collaborators():
         if i != None:
             print "-",i.login
     print "-----"
-    print "HAS ISSUES=",a.has_issues
-    if a.has_issues == True:
+    print "HAS ISSUES=",repository.has_issues
+    if repository.has_issues == True:
         print "-----"
         print "ISSUES"
-        for i in a.get_issues():
+        for i in repository.get_issues():
             if i.user != None:
                 print "- Created by", i.user.login
             print "--",i.title
@@ -51,18 +51,22 @@ def analyse_repo(repository):
             print ""        
     print "-----"
     print "CONTRIBUTORS"
-    for i in a.get_contributors():
+    for i in repository.get_contributors():
         print "-", i.login
     print "-----"
     print "COMMITS"
-    for i in  a.get_commits():
+    for i in  repository.get_commits():
         print "-",i.sha
         if i.committer != None:
             print "-- by",i.committer.login
     print "-----"
     print "FORKS"
-    for i in a.get_forks():
+    for i in repository.get_forks():
         print i.name
+        print "ANALYSING A FORK"
+        print ""
+        analyse_repo(i)
+        print ""
     print "-----"
 
     return
@@ -100,6 +104,6 @@ if __name__ == "__main__":
     print ""
     
     repo_to_mine = raw_input("Enter the name of the repository you want to mine: ")
-    
-    analyse_repo(repo_to_mine)
+    b = org.get_repo(repo_to_mine)
+    analyse_repo(b)
     
