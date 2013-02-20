@@ -17,17 +17,22 @@ from github import Github
 import networkx as nx
 import getpass
 
+# Variable for the whole program
+
 graph = nx.MultiDiGraph()
 issue = {}
 issue = {0:{"author":"none", "comments":{}}}
+commits = {0:{"commit","sha"}}
+repos = {}
 
-def analyse_repo(repository):    
+def analyse_repo(repository,loop): 
+    print ""
+    print "LOOP:",loop
+    print ""   
     print "-----"
     print "DESCRIPTION:",repository.description
-    print ""
     print "-----"
     print "OWNER:",repository.owner.login
-    print ""
     graph.add_node(str(unicode(repository.owner.login)),owner="Yes")
     print "-----"
     print "WATCHERS:",repository.watchers
@@ -65,6 +70,7 @@ def analyse_repo(repository):
             print "--",i.title
             if i.assignee != None:
                 print "-- Assigned to",i.assignee.login
+                graph.add_edge(str(i.user.login),str(i.assignee.login))
             print "--",i.comments,"comments"
             for j,f in enumerate(i.get_comments()):
                 if f.user != None:
@@ -84,6 +90,7 @@ def analyse_repo(repository):
             print "--",i.title
             if i.assignee != None:
                 print "-- Assigned to",i.assignee.login
+                graph.add_edge(str(i.user.login),str(i.assignee.login))
             print "--",i.comments,"comments"
             for j,f in enumerate(i.get_comments()):
                 if f.user != None:
@@ -103,22 +110,19 @@ def analyse_repo(repository):
     print "-----"
     print "COMMITS"
     print ""
-    for i in  repository.get_commits():
+    
+    repos[loop]={0:""}
+    for k,i in enumerate(repository.get_commits()):
         print "-",i.sha
+        print "K=",k
+        
         if i.committer != None:
             print "-- by",i.committer.login
+            repos[loop][k]=i.committer.login
+        
    
     print "-----"
-    
-    #print "FORKS"
-    #for i in repository.get_forks():
-    #    print i.name
-    #    print "ANALYSING A FORK"
-    #    print ""
-    #    analyse_repo(i)
-    #    print ""
-    #print "-----"
-    
+       
     # Check the attributes of every node, and add a "No" when it is not present, in order to let Gephi use the attribute for graph partitioning
     for i in graph.nodes():
         if "owner" not in graph.node[i]:
@@ -129,6 +133,18 @@ def analyse_repo(repository):
             graph.node[i]["collaborator"] = "No"
         if "watcher" not in graph.node[i]:
             graph.node[i]["watcher"] = "No"
+            
+            
+    # Add an edge from a commiter to a previous one,
+    # i.e. if you are committing after somebody has commited,
+    # you are interacting with him/her
+    print ""
+    print "ADDING EDGES FROM COMMITS"
+    print ""
+    for i,h in enumerate(repos[loop]):
+        print "i=",i
+        print "h=",h
+        print repos[loop][i]
             
     # Creating the edges from the issues and their comments.
     # Each comment interacts with the previous ones,
@@ -151,6 +167,17 @@ def analyse_repo(repository):
                 graph.add_edge(str(issue[a]["comments"][l]),str(issue[a]["comments"][l]))
     print ""
     print "-----"
+    
+    #print "FORKS"
+    #print ""
+    #for f,i in enumerate(repository.get_forks()):
+    #    print i.name
+    #    print "ANALYSING A FORK, number",f
+    #    print ""
+    #    analyse_repo(i,f+1)
+    #    print ""
+    #print "-----"
+ 
 
     return
 
@@ -186,7 +213,7 @@ if __name__ == "__main__":
     
     repo_to_mine = raw_input("Enter the name of the repository you want to mine: ")
     b = org.get_repo(repo_to_mine)
-    analyse_repo(b)
+    analyse_repo(b,0)
     
     print ""
     print "NODES..."
