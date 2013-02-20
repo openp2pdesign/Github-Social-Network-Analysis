@@ -19,15 +19,19 @@ import getpass
 
 graph = nx.MultiDiGraph()
 issue = {}
+issue = {0:{"author":"none", "comments":{}}}
 
 def analyse_repo(repository):    
     print "-----"
     print "DESCRIPTION:",repository.description
+    print ""
     print "-----"
     print "OWNER:",repository.owner.login
+    print ""
     graph.add_node(str(unicode(repository.owner.login)),owner="Yes")
     print "-----"
     print "WATCHERS:",repository.watchers
+    print ""
     for i in repository.get_stargazers():
         if i != None:
             print "-",i.login
@@ -37,6 +41,7 @@ def analyse_repo(repository):
                 graph.node[i.login]["watcher"]="Yes"
     print "-----"
     print "COLLABORATORS"
+    print ""
     for i in repository.get_collaborators():
         if i != None:
             print "-",i.login
@@ -49,40 +54,46 @@ def analyse_repo(repository):
     if repository.has_issues == True:
         print "-----"
         print "ISSUES: Open ones"
+        print ""
         for i in repository.get_issues(state="open"):
+            print "Issue number:",i.number
             if i.user != None:
                 print "- Created by", i.user.login
-                #issue[i.number]["author"] = i.user.login
-                #print issue[i.number]["author"]
-                print i.number
+                issue[i.number]= {}
+                issue[i.number]["comments"]= {}
+                issue[i.number]["author"] = i.user.login
             print "--",i.title
             if i.assignee != None:
                 print "-- Assigned to",i.assignee.login
             print "--",i.comments,"comments"
-            for f in i.get_comments():
+            for j,f in enumerate(i.get_comments()):
                 if f.user != None:
                     print "--- With a comment by",f.user.login
+                    issue[i.number]["comments"][j] = f.user.login
             print ""      
 
         print "ISSUES: Closed ones"
+        print ""
         for i in repository.get_issues(state="closed"):
+            print "Issue number:",i.number
             if i.user != None:
                 print "- Created by", i.user.login
-                #issue[i.number]["author"] = i.user.login
-                #print issue[i.number]["author"]
-                print i.number
+                issue[i.number]= {}
+                issue[i.number]["comments"]= {}
+                issue[i.number]["author"] = i.user.login
             print "--",i.title
             if i.assignee != None:
                 print "-- Assigned to",i.assignee.login
             print "--",i.comments,"comments"
-            for f in i.get_comments():
+            for j,f in enumerate(i.get_comments()):
                 if f.user != None:
                     print "--- With a comment by",f.user.login
+                    issue[i.number]["comments"][j] = f.user.login
             print ""      
-
               
     print "-----"
     print "CONTRIBUTORS"
+    print ""
     for i in repository.get_contributors():
         print "-", i.login
         if i.login not in graph:
@@ -91,6 +102,7 @@ def analyse_repo(repository):
             graph.node[i.login]["contributor"]="Yes"
     print "-----"
     print "COMMITS"
+    print ""
     for i in  repository.get_commits():
         print "-",i.sha
         if i.committer != None:
@@ -117,6 +129,28 @@ def analyse_repo(repository):
             graph.node[i]["collaborator"] = "No"
         if "watcher" not in graph.node[i]:
             graph.node[i]["watcher"] = "No"
+            
+    # Creating the edges from the issues and their comments.
+    # Each comment interacts with the previous ones,
+    # so each user interacts with the previous ones that have been creating the issue or commented it
+    print ""
+    print "ADDING EDGES FROM ISSUES COMMENTING"
+    print ""
+    
+    for a,b in enumerate(issue):
+        print "-----"
+        print "Issue author:",issue[a]["author"]
+        print ""
+        for k,j in enumerate(issue[a]["comments"]):
+            print "Comment author:",issue[a]["comments"][k]
+            print "Adding an edge from",issue[a]["comments"][k],"to",issue[a]["author"]
+            graph.add_edge(str(issue[a]["comments"][k]),str(issue[a]["author"]))
+
+            for l in range(k):
+                print "Adding an edge from",issue[a]["comments"][k],"to",issue[a]["comments"][l]
+                graph.add_edge(str(issue[a]["comments"][l]),str(issue[a]["comments"][l]))
+    print ""
+    print "-----"
 
     return
 
@@ -154,8 +188,13 @@ if __name__ == "__main__":
     b = org.get_repo(repo_to_mine)
     analyse_repo(b)
     
+    print ""
+    print "NODES..."
     print graph.nodes()
+    print ""
+    print "EDGES..."
     print graph.edges()
+    print ""
     
     print "Saving the network..."
     nx.write_gexf(graph, username+"_"+repo_to_mine+"_social_interactions_analysis.gexf")
