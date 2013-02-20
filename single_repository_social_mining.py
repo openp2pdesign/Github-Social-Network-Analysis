@@ -1,5 +1,5 @@
 #
-# Social analysis of an Organization repository in GitHub
+# Social analysis of a single repository in GitHub
 #
 # Author: Massimo Menichinelli
 # Homepage: http://www.openp2pdesign.org
@@ -243,7 +243,7 @@ def analyse_repo(repository,loop):
 
 
 if __name__ == "__main__":
-    print "Social Network Analisys of your GitHub Organization"
+    print "Social Network Analisys of a GitHub repository"
     print ""
     userlogin = raw_input("Login: Enter your username: ")
     password = getpass.getpass("Login: Enter yor password: ")
@@ -252,27 +252,17 @@ if __name__ == "__main__":
     g = Github( userlogin, password )
     
     
-    print "ORGANIZATIONS:"
-    for i in g.get_user(username).get_orgs():
-        print "-", i.login
-    print ""
-    
-    org_to_mine = raw_input("Enter the name of the Organization you want to analyse: ")
-    print ""
-    
-    org = g.get_organization(org_to_mine)
-    
-    print org.login,"has",org.public_repos, "repositories."
+    print username,"has",g.get_user(username).public_repos, "repositories."
     
     print ""
     
-    for repo in org.get_repos():
+    for repo in g.get_user(username).get_repos():
         print "-",repo.name
     
     print ""
     
     repo_to_mine = raw_input("Enter the name of the repository you want to mine: ")
-    b = org.get_repo(repo_to_mine)
+    b = g.get_user(username).get_repo(repo_to_mine)
     analyse_repo(b,0)
     
     # Getting rid of the node "None", it was used to catch the errors of users that are NoneType
