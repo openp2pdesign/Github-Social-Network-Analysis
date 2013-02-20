@@ -149,8 +149,6 @@ def analyse_repo(repository,loop):
         else:
             print "-- by None"
             repos[loop][k]="None"
-        
-   
     print "-----"
        
     # Check the attributes of every node, and add a "No" when it is not present, in order to let Gephi use the attribute for graph partitioning
@@ -191,11 +189,11 @@ def analyse_repo(repository,loop):
         print ""
         for k,j in enumerate(issue[a]["comments"]):
             print "Comment author:",issue[a]["comments"][k]
-            print "Adding an edge from",issue[a]["comments"][k],"to",issue[a]["author"]
+            print "Adding an edge from:",issue[a]["comments"][k],"to:",issue[a]["author"]
             graph.add_edge(str(issue[a]["comments"][k]),str(issue[a]["author"]))
 
             for l in range(k):
-                print "Adding an edge from",issue[a]["comments"][k],"to",issue[a]["comments"][l]
+                print "Adding an edge from:",issue[a]["comments"][k],"to:",issue[a]["comments"][l]
                 graph.add_edge(str(issue[a]["comments"][l]),str(issue[a]["comments"][l]))
     print ""
     
@@ -220,7 +218,7 @@ def analyse_repo(repository,loop):
             print "Assignee:",i.assignee.login
         if i.user != None:
             print "User:",i.user.login
-        print "Adding an edge from",i.user.login,"to",i.assignee.login
+        print "Adding an edge from:",i.user.login,"to:",i.assignee.login
         graph.add_edge(str(i.user.login),str(i.assignee.login))
         
         # We should look at the comments on the pull request, but it seems not to be working now
@@ -270,7 +268,7 @@ if __name__ == "__main__":
     b = org.get_repo(repo_to_mine)
     analyse_repo(b,0)
     
-    # Getting rid of the node None, it was used to catch the errors of users that are NoneType
+    # Getting rid of the node "None", it was used to catch the errors of users that are NoneType
     graph.remove_node('None')
     
     print ""
