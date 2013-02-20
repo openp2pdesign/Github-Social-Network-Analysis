@@ -17,7 +17,7 @@ from github import Github
 import networkx as nx
 import getpass
 
-# Variable for the whole program
+# Variables for the whole program
 
 graph = nx.MultiDiGraph()
 issue = {}
@@ -44,6 +44,8 @@ def analyse_repo(repository,loop):
                 graph.add_node(str(unicode(i.login)),watcher="Yes")
             else:
                 graph.node[i.login]["watcher"]="Yes"
+        else:
+            graph.node["None"]["watcher"]="Yes"
     print "-----"
     print "COLLABORATORS"
     print ""
@@ -54,6 +56,8 @@ def analyse_repo(repository,loop):
                 graph.add_node(str(unicode(i.login)),collaborator="Yes")
             else:
                 graph.node[i.login]["collaborator"]="Yes"
+        else:
+            graph.node["None"]["collaborator"]="Yes"
     print "-----"
     print "HAS ISSUES=",repository.has_issues
     if repository.has_issues == True:
@@ -67,15 +71,26 @@ def analyse_repo(repository,loop):
                 issue[i.number]= {}
                 issue[i.number]["comments"]= {}
                 issue[i.number]["author"] = i.user.login
+            else:
+                print "- Created by None"
+                issue[i.number]= {}
+                issue[i.number]["comments"]= {}
+                issue[i.number]["author"] = "None"
             print "--",i.title
             if i.assignee != None:
                 print "-- Assigned to",i.assignee.login
                 graph.add_edge(str(i.user.login),str(i.assignee.login))
+            else:
+                print "-- Assigned to None"
+                graph.add_edge(str(i.user.login),"None")
             print "--",i.comments,"comments"
             for j,f in enumerate(i.get_comments()):
                 if f.user != None:
                     print "--- With a comment by",f.user.login
                     issue[i.number]["comments"][j] = f.user.login
+                else:
+                    print "--- With a comment by None"
+                    issue[i.number]["comments"][j] = "None"
             print ""      
 
         print "ISSUES: Closed ones"
@@ -87,26 +102,40 @@ def analyse_repo(repository,loop):
                 issue[i.number]= {}
                 issue[i.number]["comments"]= {}
                 issue[i.number]["author"] = i.user.login
+            else:
+                print "- Created by None"
+                issue[i.number]= {}
+                issue[i.number]["comments"]= {}
+                issue[i.number]["author"] = "None"
             print "--",i.title
             if i.assignee != None:
                 print "-- Assigned to",i.assignee.login
                 graph.add_edge(str(i.user.login),str(i.assignee.login))
+            else:
+                print "-- Assigned to None"
+                graph.add_edge(str(i.user.login),"None")
             print "--",i.comments,"comments"
             for j,f in enumerate(i.get_comments()):
                 if f.user != None:
                     print "--- With a comment by",f.user.login
                     issue[i.number]["comments"][j] = f.user.login
+                else:
+                    print "--- With a comment by None"
+                    issue[i.number]["comments"][j] = "None"
             print ""      
               
     print "-----"
     print "CONTRIBUTORS"
     print ""
     for i in repository.get_contributors():
-        print "-", i.login
-        if i.login not in graph:
-                graph.add_node(str(unicode(i.login)),contributor="Yes")
+        if i.login != None:
+            print "-", i.login
+            if i.login not in graph:
+                    graph.add_node(str(unicode(i.login)),contributor="Yes")
+            else:
+                graph.node[i.login]["contributor"]="Yes"
         else:
-            graph.node[i.login]["contributor"]="Yes"
+            graph.node["None"]["contributor"]="Yes"
     print "-----"
     print "COMMITS"
     print ""
@@ -114,8 +143,6 @@ def analyse_repo(repository,loop):
     repos[loop]={0:""}
     for k,i in enumerate(repository.get_commits()):
         print "-",i.sha
-        print "K=",k
-        
         if i.committer != None:
             print "-- by",i.committer.login
             repos[loop][k]=i.committer.login
@@ -145,15 +172,16 @@ def analyse_repo(repository,loop):
     print ""
     for h in repos[loop]:
         if h < len(repos[loop])-1:
-            print "h:",h
-            print "committer:",repos[loop][h]
-            print "Adding an edge from",repos[loop][h],"to",repos[loop][h+1]
+            print "-"
+            print "Committer:",repos[loop][h]
+            print "Adding an edge from:",repos[loop][h],"to previous committer:",repos[loop][h+1]
             #graph.add_edge(str(i.user.login),str(i.assignee.login))
             
     # Creating the edges from the issues and their comments.
     # Each comment interacts with the previous ones,
     # so each user interacts with the previous ones that have been creating the issue or commented it
     print ""
+    print "-----"
     print "ADDING EDGES FROM ISSUES COMMENTING"
     print ""
     
@@ -241,6 +269,9 @@ if __name__ == "__main__":
     repo_to_mine = raw_input("Enter the name of the repository you want to mine: ")
     b = org.get_repo(repo_to_mine)
     analyse_repo(b,0)
+    
+    # Getting rid of the node None, it was used to catch the errors of users that are NoneType
+    graph.remove_node('None')
     
     print ""
     print "NODES..."
