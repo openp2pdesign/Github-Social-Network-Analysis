@@ -37,10 +37,11 @@ def analyse_repo(repository):
     print "HAS ISSUES=",repository.has_issues
     if repository.has_issues == True:
         print "-----"
-        print "ISSUES"
-        for i in repository.get_issues():
+        print "ISSUES: Open ones"
+        for i in repository.get_issues(state="open"):
             if i.user != None:
                 print "- Created by", i.user.login
+                print i.number
             print "--",i.title
             if i.assignee != None:
                 print "-- Assigned to",i.assignee.login
@@ -48,8 +49,22 @@ def analyse_repo(repository):
             for f in i.get_comments():
                 if f.user != None:
                     print "--- With a comment by",f.user.login
-            print ""        
-    print "-----"
+            print ""      
+
+        print "ISSUES: Closed ones"
+        for i in repository.get_issues(state="closed"):
+            if i.user != None:
+                print "- Created by", i.user.login
+                print i.number
+            print "--",i.title
+            if i.assignee != None:
+                print "-- Assigned to",i.assignee.login
+            print "--",i.comments,"comments"
+            for f in i.get_comments():
+                if f.user != None:
+                    print "--- With a comment by",f.user.login
+            print ""
+        print "-----"
     print "CONTRIBUTORS"
     for i in repository.get_contributors():
         print "-", i.login

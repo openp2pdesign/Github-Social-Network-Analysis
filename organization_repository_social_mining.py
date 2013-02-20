@@ -18,12 +18,14 @@ import networkx as nx
 import getpass
 
 graph = nx.MultiDiGraph()
+issue = {}
 
 def analyse_repo(repository):    
     print "-----"
     print "DESCRIPTION:",repository.description
     print "-----"
     print "OWNER:",repository.owner.login
+    graph.add_node(str(unicode(repository.owner.login)),owner="Yes")
     print "-----"
     print "WATCHERS:",repository.watchers
     for i in repository.get_stargazers():
@@ -46,10 +48,13 @@ def analyse_repo(repository):
     print "HAS ISSUES=",repository.has_issues
     if repository.has_issues == True:
         print "-----"
-        print "ISSUES"
-        for i in repository.get_issues():
+        print "ISSUES: Open ones"
+        for i in repository.get_issues(state="open"):
             if i.user != None:
                 print "- Created by", i.user.login
+                #issue[i.number]["author"] = i.user.login
+                #print issue[i.number]["author"]
+                print i.number
             print "--",i.title
             if i.assignee != None:
                 print "-- Assigned to",i.assignee.login
@@ -57,7 +62,25 @@ def analyse_repo(repository):
             for f in i.get_comments():
                 if f.user != None:
                     print "--- With a comment by",f.user.login
-            print ""        
+            print ""      
+
+        print "ISSUES: Closed ones"
+        for i in repository.get_issues(state="closed"):
+            if i.user != None:
+                print "- Created by", i.user.login
+                #issue[i.number]["author"] = i.user.login
+                #print issue[i.number]["author"]
+                print i.number
+            print "--",i.title
+            if i.assignee != None:
+                print "-- Assigned to",i.assignee.login
+            print "--",i.comments,"comments"
+            for f in i.get_comments():
+                if f.user != None:
+                    print "--- With a comment by",f.user.login
+            print ""      
+
+              
     print "-----"
     print "CONTRIBUTORS"
     for i in repository.get_contributors():
@@ -86,8 +109,10 @@ def analyse_repo(repository):
     
     # Check the attributes of every node, and add a "No" when it is not present, in order to let Gephi use the attribute for graph partitioning
     for i in graph.nodes():
+        if "owner" not in graph.node[i]:
+            graph.node[i]["owner"] = "No"
         if "contributor" not in graph.node[i]:
-            graph.node[i]["contributor"] = "No"
+            graph.node[i]["contributor"] = "No"               
         if "collaborator" not in graph.node[i]:
             graph.node[i]["collaborator"] = "No"
         if "watcher" not in graph.node[i]:
