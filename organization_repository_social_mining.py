@@ -17,7 +17,7 @@ from github import Github
 import networkx as nx
 import getpass
 
-graph = nx.DiGraph()
+graph = nx.MultiDiGraph()
 
 def analyse_repo(repository):    
     print "-----"
@@ -74,6 +74,7 @@ def analyse_repo(repository):
             print "-- by",i.committer.login
    
     print "-----"
+    
     #print "FORKS"
     #for i in repository.get_forks():
     #    print i.name
@@ -82,12 +83,21 @@ def analyse_repo(repository):
     #    analyse_repo(i)
     #    print ""
     #print "-----"
+    
+    # Check the attributes of every node, and add a "No" when it is not present, in order to let Gephi use the attribute for graph partitioning
+    for i in graph.nodes():
+        if "contributor" not in graph.node[i]:
+            graph.node[i]["contributor"] = "No"
+        if "collaborator" not in graph.node[i]:
+            graph.node[i]["collaborator"] = "No"
+        if "watcher" not in graph.node[i]:
+            graph.node[i]["watcher"] = "No"
 
     return
 
 
 if __name__ == "__main__":
-    print "Basic Analisys of your GitHub Organization"
+    print "Social Network Analisys of your GitHub Organization"
     print ""
     userlogin = raw_input("Login: Enter your username: ")
     password = getpass.getpass("Login: Enter yor password: ")
@@ -124,4 +134,4 @@ if __name__ == "__main__":
     
     print "Saving the network..."
     nx.write_gexf(graph, username+"_"+repo_to_mine+"_social_interactions_analysis.gexf")
-    print "Done."
+    print "Done. Saved as "+username+"_"+repo_to_mine+"_social_interactions_analysis.gexf"
