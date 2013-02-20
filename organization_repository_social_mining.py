@@ -119,6 +119,9 @@ def analyse_repo(repository,loop):
         if i.committer != None:
             print "-- by",i.committer.login
             repos[loop][k]=i.committer.login
+        else:
+            print "-- by None"
+            repos[loop][k]="None"
         
    
     print "-----"
@@ -138,13 +141,14 @@ def analyse_repo(repository,loop):
     # Add an edge from a commiter to a previous one,
     # i.e. if you are committing after somebody has commited,
     # you are interacting with him/her
-    print ""
     print "ADDING EDGES FROM COMMITS"
     print ""
-    for i,h in enumerate(repos[loop]):
-        print "i=",i
-        print "h=",h
-        print repos[loop][i]
+    for h in repos[loop]:
+        if h < len(repos[loop])-1:
+            print "h:",h
+            print "committer:",repos[loop][h]
+            print "Adding an edge from",repos[loop][h],"to",repos[loop][h+1]
+            #graph.add_edge(str(i.user.login),str(i.assignee.login))
             
     # Creating the edges from the issues and their comments.
     # Each comment interacts with the previous ones,
@@ -166,7 +170,7 @@ def analyse_repo(repository,loop):
                 print "Adding an edge from",issue[a]["comments"][k],"to",issue[a]["comments"][l]
                 graph.add_edge(str(issue[a]["comments"][l]),str(issue[a]["comments"][l]))
     print ""
-    print "-----"
+    
     
     #print "FORKS"
     #print ""
@@ -177,6 +181,29 @@ def analyse_repo(repository,loop):
     #    analyse_repo(i,f+1)
     #    print ""
     #print "-----"
+    
+    print "-----"
+    print "PULL REQUESTS"
+    print ""
+    
+    for i in repository.get_pulls():
+        print i.id
+        if i.assignee != None:
+            print "Assignee:",i.assignee.login
+        if i.user != None:
+            print "User:",i.user.login
+        print "Adding an edge from",i.user.login,"to",i.assignee.login
+        graph.add_edge(str(i.user.login),str(i.assignee.login))
+        
+        # We should look at the comments on the pull request, but it seems not to be working now
+        #for k,jj in enumerate(i.get_comments()):
+        #    print "k=",k
+        #    print "a",jj
+        #    print "User comment a:",jj.user.login
+        #    print jj.body
+   
+    print "-----"
+  
  
 
     return
