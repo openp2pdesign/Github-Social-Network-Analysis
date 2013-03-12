@@ -20,10 +20,11 @@ Description
 4. **organization_repository_analysis.py**: Analysis of an Organization repository, starting from a user. No graph is built
 5. **organization_repository_social_mining.py**: Analysis of an Organization repository, starting from a user. A .gexf graph with multiple edges is built and saved
 6. **organization_repository_social_mining_weighted.py**: Analysis of an Organization repository, starting from a user. A .gexf graph is built with weighted singular edges and saved
-7. **organization_ego-network.py**: Ego-network search for followers and following users of all the members of an Organization, Depth = 1
-8. **organization_ego-network-2levels.py**: Ego-network search for followers and following users of all the members of an Organization, Depth = 2
-9. **single_repository_social_mining.py**: Analysis of a user repository, starting from a user. A .gexf graph with multiple edges is built and saved
-10. **single_repository_social_mining_weighted.py**: Analysis of a user repository, starting from a user. A .gexf graph with weighted singular edges is built and saved
+7. **organization_repositories_social_mining_weighted.py**: Analysis of an Organization (all its repositories), starting from a user. A .gexf graph is built with weighted singular edges and saved
+8. **organization_ego-network.py**: Ego-network search for followers and following users of all the members of an Organization, Depth = 1
+9. **organization_ego-network-2levels.py**: Ego-network search for followers and following users of all the members of an Organization, Depth = 2
+10. **single_repository_social_mining.py**: Analysis of a user repository, starting from a user. A .gexf graph with multiple edges is built and saved
+11. **single_repository_social_mining_weighted.py**: Analysis of a user repository, starting from a user. A .gexf graph with weighted singular edges is built and saved
 
 
 Requisites
