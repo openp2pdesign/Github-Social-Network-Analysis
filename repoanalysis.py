@@ -163,13 +163,10 @@ def analyse_repo(repository,graph):
     
     for k,i in enumerate(repository.get_commits()):
         print "Committed by: ",i.author.login
-        print "X: ", i.get_comments()
-        for v,f in enumerate(i.get_comments()):
-            print "comments..."
-            print v
-            print "XX:",f
-            print ":", f.body
+        for m,f in enumerate(i.get_comments()):
+            print "Comment:", f.body
             print "comment by: ",f.user.login
+            graph.add_edge(str(f.user.login),str(i.author.login))
         #if i.committer != None:
         #    print "-- by",i.committer.login
         #    repos[0][k]=i.committer.login
