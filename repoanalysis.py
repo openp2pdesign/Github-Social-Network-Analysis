@@ -152,7 +152,29 @@ def analyse_repo(repository,graph):
             print "Committer:",repos[0][h]
             print "Adding an edge from:",repos[0][h],"to previous committer:",repos[0][h+1]
             graph.add_edge(str(repos[0][h]),str(repos[0][h+1]))
-            
+    
+    # Creating the edges from the commits and their comments.
+    # Each comment interacts with the previous ones,
+    # so each user interacts with the previous ones that have been creating the issue or commented it
+    print ""
+    print "-----"
+    print "ADDING EDGES FROM COMMENTS IN COMMITS"
+    print ""
+    
+    for k,i in enumerate(repository.get_commits()):
+        print "Here"
+        for m in i.get_comments():
+            print "comment by: ",m.user.login
+        #if i.committer != None:
+        #    print "-- by",i.committer.login
+        #    repos[0][k]=i.committer.login
+        #else:
+        #    print "-- by None"
+        #    repos[0][k]="None"
+    print "-----"
+       
+    
+    
     # Creating the edges from the issues and their comments.
     # Each comment interacts with the previous ones,
     # so each user interacts with the previous ones that have been creating the issue or commented it
