@@ -161,18 +161,22 @@ def analyse_repo(repository,graph):
     print "ADDING EDGES FROM COMMENTS IN COMMITS"
     print ""
     
+    comm = {}
+    
     for k,i in enumerate(repository.get_commits()):
-        print "Committed by: ",i.author.login
+        print "Commit by: ",i.author.login
+        comm[k]= {}
+        comm[k]["comments"]= {}
+        
         for m,f in enumerate(i.get_comments()):
-            print "Comment:", f.body
-            print "comment by: ",f.user.login
+            print "- Commented by: ",f.user.login
+            comm[k]["comments"][m] = f.user.login
             graph.add_edge(str(f.user.login),str(i.author.login))
-        #if i.committer != None:
-        #    print "-- by",i.committer.login
-        #    repos[0][k]=i.committer.login
-        #else:
-        #    print "-- by None"
-        #    repos[0][k]="None"
+            print "- Adding an edge from ",f.user.login, "to", i.author.login
+    
+            for l in range(m):
+                print "- Adding an edge from ",f.user.login,"to",comm[k]["comments"][l]
+    
     print "-----"
        
     
@@ -230,12 +234,8 @@ def analyse_repo(repository,graph):
         print "Adding an edge from:",one,"to:",two
         graph.add_edge(str(one),str(two))
         
-        # We should look at the comments on the pull request, but it seems not to be working now
-        #for k,jj in enumerate(i.get_comments()):
-        #    print "k=",k
-        #    print "a",jj
-        #    print "User comment a:",jj.user.login
-        #    print jj.body
+        # We should look at the comments on the pull request, but a pull request is automatically translated
+        # as an issue, so we are already looking at the issue comments
    
     print "-----"
   
