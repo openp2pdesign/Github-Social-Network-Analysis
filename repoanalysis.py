@@ -164,7 +164,8 @@ def analyse_repo(repository,graph):
     comm = {}
     
     for k,i in enumerate(repository.get_commits()):
-        print "Commit by: ",i.author.login
+        if i.author != None:
+            print "Commit by: ",i.author.login
         comm[k]= {}
         comm[k]["comments"]= {}
         
