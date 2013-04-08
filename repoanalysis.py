@@ -177,6 +177,7 @@ def analyse_repo(repository,graph):
     
             for l in range(m):
                 print "- Adding an edge from ",f.user.login,"to",comm[k]["comments"][l]
+                graph.add_edge(str(f.user.login),str(comm[k]["comments"][l]))
     
     print "-----"
        
