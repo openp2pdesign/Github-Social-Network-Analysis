@@ -1,3 +1,19 @@
+# -*- coding: utf-8 -*-
+#
+# Social analysis of GitHub: main library
+#
+# Author: Massimo Menichinelli
+# Homepage: http://www.openp2pdesign.org
+# License: GPL v.3
+#
+# Requisite: 
+# install pyGithub with pip install PyGithub
+# install NetworkX with pip install networkx
+#
+# PyGitHub documentation can be found here: 
+# https://github.com/jacquev6/PyGithub
+#
+
 from github import Github
 import networkx as nx
 

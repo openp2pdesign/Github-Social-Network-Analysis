@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Social analysis of an Organization repository in GitHub
 #
@@ -16,6 +17,10 @@
 from github import Github
 import networkx as nx
 import getpass
+import os
+
+# Clear screen
+os.system('cls' if os.name=='nt' else 'clear')
 
 from repoanalysis import analyse_repo
 

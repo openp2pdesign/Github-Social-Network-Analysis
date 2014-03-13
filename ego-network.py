@@ -17,6 +17,10 @@
 from github import Github
 import networkx as nx
 import getpass
+import os
+
+# Clear screen
+os.system('cls' if os.name=='nt' else 'clear')
 
 print "Social Network Analisys of a user GitHub network"
 print ""

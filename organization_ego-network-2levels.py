@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Ego-network analysis of followers in a GitHub organization, Degree 2 
 # Fast version (only account name)
@@ -17,6 +18,10 @@
 from github import Github
 import networkx as nx
 import getpass
+import os
+
+# Clear screen
+os.system('cls' if os.name=='nt' else 'clear')
 
 print "Organization Ego-network analysis"
 print ""
