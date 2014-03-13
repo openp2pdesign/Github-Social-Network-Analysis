@@ -48,7 +48,7 @@ for f in g.get_user(user).get_followers():
              
 print "-----"
 
-print "Looking for the users",user", is following..."
+print "Looking for the users",user,"is following..."
 for f in g.get_user(user).get_following():
     print " -", f.login
     graph.add_node(f.login,label=f.login)
