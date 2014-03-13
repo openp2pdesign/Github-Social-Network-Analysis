@@ -22,15 +22,16 @@ print "Social Network Analisys of your GitHub network"
 print ""
 username = raw_input("Enter your username: ")
 password = getpass.getpass("Enter yor password: ") 
+user = raw_input("Enter the username to mine: ")
 print ""
 g = Github( username, password )
 
 graph = nx.DiGraph()
 
-graph.add_node(username,label=g.get_user().name)
+graph.add_node(username,label=g.get_user(user).name)
 
-print "Looking for your followers..."
-for f in g.get_user().get_followers():
+print "Looking for the followers of",user,"..."
+for f in g.get_user(user).get_followers():
     print " -", f.login
     graph.add_node(f.login,label=f.login)
     graph.add_edge(f.login,username)
@@ -47,8 +48,8 @@ for f in g.get_user().get_followers():
              
 print "-----"
 
-print "Looking for the users you are following..."
-for f in g.get_user().get_following():
+print "Looking for the users",user", is following..."
+for f in g.get_user(user).get_following():
     print " -", f.login
     graph.add_node(f.login,label=f.login)
     graph.add_edge(username,f.login)
