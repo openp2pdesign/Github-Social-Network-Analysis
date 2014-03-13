@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Ego-network analysis of followers in GitHub, Degree 2 
 # Fast version (only account name)

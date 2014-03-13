@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Ego-network analysis of followers in GitHub, Degree 1 
 # Slow version (even real name)
