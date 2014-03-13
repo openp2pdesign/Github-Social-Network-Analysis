@@ -67,5 +67,5 @@ for f in g.get_user(user).get_following():
 print "-----"
 
 print "Saving the network..."
-nx.write_gexf(graph, username+"_ego-network_2_levels.gexf")
+nx.write_gexf(graph, user+"_ego-network_2_levels.gexf")
 print "Done."
