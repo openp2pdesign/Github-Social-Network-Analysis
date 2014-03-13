@@ -28,13 +28,13 @@ g = Github( username, password )
 
 graph = nx.DiGraph()
 
-graph.add_node(username,label=g.get_user(user).name)
+graph.add_node(user,label=g.get_user(user).name)
 
 print "Looking for the followers of",user,"..."
 for f in g.get_user(user).get_followers():
     print " -", f.login
     graph.add_node(f.login,label=f.login)
-    graph.add_edge(f.login,username)
+    graph.add_edge(f.login,user)
     print " And his/her followers:"
     for i in f.get_followers():
         print " --", i.login
@@ -52,7 +52,7 @@ print "Looking for the users",user,"is following..."
 for f in g.get_user(user).get_following():
     print " -", f.login
     graph.add_node(f.login,label=f.login)
-    graph.add_edge(username,f.login)
+    graph.add_edge(user,f.login)
     print " And his/her followers:"
     for i in f.get_followers():
         print " --", i.login

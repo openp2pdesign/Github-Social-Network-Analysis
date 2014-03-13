@@ -27,17 +27,17 @@ g = Github( username, password )
 
 graph = nx.DiGraph()
 
-graph.add_node(username,label=g.get_user(user).name)
+graph.add_node(user,label=g.get_user(user).name,friend="Ego")
 
 print "Looking for the followers of",user,"..."
 for f in g.get_user(user).get_followers():
     print " -", f.login, " / ", f.name
     if f.name == None:
-        graph.add_node(f.login,label=f.login)
-        graph.add_edge(f.login,username)
+        graph.add_node(f.login,label=f.login,friend="follower")
+        graph.add_edge(f.login,user)
     else:
-        graph.add_node(f.login,label=f.name)
-        graph.add_edge(f.login,username)
+        graph.add_node(f.login,label=f.name,friend="follower")
+        graph.add_edge(f.login,user)
         
 print "-----"
 
@@ -45,11 +45,11 @@ print "Looking for the users",user,"is following..."
 for f in g.get_user(user).get_following():
     print " -", f.login, " / ", f.name
     if f.name == None:
-        graph.add_node(f.login,label=f.login)
-        graph.add_edge(username,f.login)
+        graph.add_node(f.login,label=f.login,friend="following")
+        graph.add_edge(user,f.login)
     else:
-        graph.add_node(f.login,label=f.name)
-        graph.add_edge(username,f.login)
+        graph.add_node(f.login,label=f.name,friend="following")
+        graph.add_edge(user,f.login)
     
 print "-----"
 
