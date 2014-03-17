@@ -58,7 +58,8 @@ if __name__ == "__main__":
     analyse_repo(b,graph)
     
     # Getting rid of the node "None", it was used to catch the errors of users that are NoneType
-    graph.remove_node('None')
+    if "None" in graph:
+	    graph.remove_node('None')
     
     print ""
     print "NODES..."
