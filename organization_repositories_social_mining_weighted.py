@@ -88,9 +88,11 @@ if __name__ == "__main__":
     
     for j in list(graph.nodes_iter(data=True)):
         # copying all the nodes with their attributes
-        graph2.add_node(j[0],collaborator=j[1]["collaborator"],contributor=j[1]["contributor"],owner=j[1]["owner"],watcher=j[1]["watcher"])
-        
-    
+         if len(j[1])>0:
+        	graph2.add_node(j[0],collaborator=j[1]["collaborator"],contributor=j[1]["contributor"],owner=j[1]["owner"],watcher=j[1]["watcher"])
+        else:
+        	graph2.add_node(j[0])
+        	    
     for j in list(graph.edges_iter(data=True)):
         subject_id = j[0]
         object_id = j[1]
